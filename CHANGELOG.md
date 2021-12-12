@@ -2,6 +2,24 @@
 
 A curated, chronologically ordered list of notable changes in [Gitpod's default workspace images](https://hub.docker.com/u/gitpod).
 
+## 2021-08-01
+
+- Bump Go version to 1.16.6
+- Bump rust to 1.54.0
+- Bump node.js to v14.17.4
+- Bump docker-compose to 1.29.2
+- Add golangci-lint
+- Add ripgrep
+- Add cargo-workspaces to cargo utils
+- Add git-lfs
+
+## 2021-06-04
+
+- Bump Go version to 1.16.5
+- Bump nvm.sh to v0.38.0
+- Introduce pre-commit checks
+- Run shellcheck in shell scripts
+
 ## 2020-06-03
 
 - Bump Node.js version following a [security alert](https://twitter.com/liran_tal/status/1267519052731289600): [gitpod-io/workspace-images#243](https://github.com/gitpod-io/workspace-images/pull/243)

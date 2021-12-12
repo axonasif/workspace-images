@@ -2,8 +2,9 @@
 
 set -o errexit
 
-if [ $# = 0 ]; then
-  echo >&2 "No packages specified"
+# Block users from running this unless they're root.
+if [[ $EUID != 0 ]]; then
+  echo >&2 "Run this script again as root to upgrade packages."
   exit 1
 fi
 
@@ -23,7 +24,7 @@ if [ ! -d "${DAZZLE_MARKS}" ]; then
 fi
 
 apt-get update
-apt-get install -yq --no-install-recommends "$@"
+apt-get upgrade -yq --no-install-recommends
 
 cp /var/lib/dpkg/status "${DAZZLE_MARKS}/${TIMESTAMP}.status"
 
