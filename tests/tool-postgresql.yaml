@@ -5,11 +5,14 @@
   - status == 0
   - stdout.indexOf("(PostgreSQL) 12") != -1
 - desc: it should find data folder
-  command: [ls, ~/.pgsql/data]
+  command: [ls /home/gitpod/.pgsql/data]
   assert:
   - status == 0
 - desc: it should serve postgres
   entrypoint: [bash, -i, -c]
+  env:
+  - PGWORKSPACE=/home/gitpod/.pgsql
+  - PGDATA=/home/gitpod/.pgsql/data
   command: [psql -l]
   assert:
   - stdout.indexOf("List of databases") != -1
