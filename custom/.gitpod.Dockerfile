@@ -1,9 +1,10 @@
 # Hosted image is available at axonasif/gitpod-base-node-vnc:latest
 # However, you could push to your own docker account too after building and use it on work repos :)
 # The local dazzle built image will be localhost:5000/dazzle:base-node-vnc
-
-ARG image
-FROM ${image}
+##
+# ARG base
+# FROM ${base}
+FROM axonasif/gitpod-base-node-vnc:latest
 
 USER root
 # Add gcloud cli package source and install additional packages
@@ -14,7 +15,7 @@ RUN echo "deb http://packages.cloud.google.com/apt cloud-sdk main" > /etc/apt/so
     && add-apt-repository ppa:ondrej/php -y \
     \
     # Install all packages together: kubectl, gcloud, php
-    && install-packages kubectl google-cloud-sdk libnss3-tools php8.1 php8.1-common php8.1-dom php8.1-curl php8.1-gd php8.1-zip php8.1-mysql \
+    && install-packages kubectl google-cloud-cli libnss3-tools php8.1 php8.1-common php8.1-dom php8.1-curl php8.1-gd php8.1-zip php8.1-mysql \
     \
     # SOPS
     && wget https://github.com/mozilla/sops/releases/download/v3.7.1/sops_3.7.1_amd64.deb \
