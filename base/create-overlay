@@ -1,0 +1,33 @@
+#!/usr/bin/bash -u
+
+# # Only root
+# if [[ $EUID != 0 ]]; then
+# 	echo "Run this script as root via \`sudo\`" >&2
+# 	exit 1
+# fi
+
+mount_data="$(mount)"
+mount_command="fuse-overlayfs"
+overlays_dir=/workspace/.overlays
+
+for source in "${@}"; do {
+	source_full_path="$(readlink -f "${source}")"
+
+	if ! grep -q "^${mount_command} on ${source_full_path}" <<<"${mount_data}"; then {
+		pretty_source_name="${source_full_path//\//_}" # changes all `/` to `_`
+		overlay_root="${overlays_dir}/${pretty_source_name}"
+
+		lower_dir="${source_full_path}"
+		upper_dir="${overlay_root}/upper"
+		work_dir="${overlay_root}/work"
+
+		mkdir -p "${upper_dir}" "${work_dir}"
+
+		# shellcheck disable=SC2140
+		sudo ${mount_command} \
+			-olowerdir="${lower_dir}",upperdir="${upper_dir}",workdir="${work_dir},allow_other" \
+			"${source_full_path}" 2>/dev/null
+		# | grep -v '^unknown argument ignored:'
+	}; fi
+
+}; done
