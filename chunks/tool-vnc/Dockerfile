@@ -21,9 +21,8 @@ COPY novnc-index.html /opt/novnc/index.html
 
 # Add VNC startup script
 COPY gp-vncsession /usr/bin/
-RUN chmod 0755 "$(which gp-vncsession)" \
-	&& printf '%s\n' 'export DISPLAY=:0' \
-	'test -e "$GITPOD_REPO_ROOT" && gp-vncsession' >> "$HOME/.bashrc"
+RUN  printf 'export DISPLAY=:%s\n' '0' > "$HOME/.bashrc.d/1000-vnc" \
+	&& printf '%s\n' 'gp-vncsession' > "$HOME/.runonce/1000-vnc"
 # Add X11 dotfiles
 COPY --chown=gitpod:gitpod .xinitrc $HOME/
 
