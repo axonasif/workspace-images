@@ -7,9 +7,13 @@ USER gitpod
 # Dazzle does not rebuild a layer until one of its lines are changed. Increase this counter to rebuild this layer.
 ENV TRIGGER_REBUILD=1
 
-ENV PATH="$HOME/.pyenv/bin:$HOME/.pyenv/shims:$PATH"
-ENV PIPENV_VENV_IN_PROJECT=true
 ENV PYENV_ROOT="$HOME/.pyenv"
+ENV PIPENV_VENV_IN_PROJECT=true
+ENV PIP_CACHE_DIR="${PYENV_ROOT}/pip_cache"
+ENV PYTHONUSERBASE="${PYENV_ROOT}/userbase"
+ENV PATH="${PYENV_ROOT}/bin:${PYENV_ROOT}/shims:${PYTHONUSERBASE}/bin:$PATH"
+# Poetry customizations
+ENV POETRY_CACHE_DIR="${PYENV_ROOT}/poetry"
 
 # configure the default intepreter for PyCharm
 ENV PYCHARM_PYTHON_PATH="$HOME/.pyenv/shims/python"
@@ -21,10 +25,9 @@ RUN sudo install-packages \
 	libncursesw5-dev xz-utils tk-dev libxml2-dev libxmlsec1-dev libffi-dev liblzma-dev \
 	# Install PYENV
 	&& git clone https://github.com/pyenv/pyenv.git ~/.pyenv \
-	&& git -C ~/.pyenv checkout ff93c58babd813066bf2d64d004a5cee33c0f27b \
+	&& git -C ~/.pyenv checkout 20189ff06f76fb1eec7b149ad6f86134057c809c \
 	&& pyenv install ${PYTHON_VERSION} \
 	&& pyenv global ${PYTHON_VERSION} \
-	&& for exec in global; do printf '%s\n' 'source "$HOME/.gp_pyenv.d/userbase.bash"' >> "$PYENV_ROOT/libexec/pyenv-$exec"; done \
 	# Install additional python packages
 	&& python3 -m pip install --no-cache-dir --upgrade pip \
 	&& pip install --no-cache-dir --upgrade \
@@ -39,7 +42,5 @@ RUN if echo $PYTHON_VERSION | grep -q "3.6.*"; then \
 	fi
 RUN sudo rm -rf /tmp/*
 
-COPY --chown=gitpod:gitpod pyenv.d $HOME/.gp_pyenv.d
-COPY --chown=gitpod:gitpod userbase.bash $HOME/.gp_pyenv.d
-COPY --chown=gitpod:gitpod python_hook.bash $HOME/.bashrc.d/60-python
-COPY --chown=gitpod:gitpod avoid_userbase_hook.bash $HOME/.pyenv/pyenv.d/exec
+COPY --chown=gitpod:gitpod python_bashrc.sh $HOME/.bashrc.d/60-python
+COPY --chown=gitpod:gitpod python_runonce.sh $HOME/.runonce/0-python
