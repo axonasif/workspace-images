@@ -5,7 +5,7 @@
 if test -e "${GITPOD_REPO_ROOT:-}"; then {
 	# Set $HOME/.pyenv/shims/python as the default Interpreter for ms-python.python VSCode extension
 	input="$(
-		printf '{ "python.defaultInterpreterPath": "%s", "python.terminal.activateEnvironment": false }\n' "$HOME/.pyenv/shims/python"
+		printf '{ "python.defaultInterpreterPath": "%s", "python.terminal.activateEnvironment": false }\n' "${RUNTIME_VIRTUAL_ENV}/bin/python"
 	)"
 	for vscode_machine_settings_file in \
 		"/workspace/.vscode-remote/data/Machine/settings.json" \
@@ -33,6 +33,13 @@ if test -e "${GITPOD_REPO_ROOT:-}"; then {
 
 		}; done
 
-	create-overlay "$HOME/.pyenv"
-	unset input vscode_machine_settings_file tmp_file
+	# create-overlay "$HOME/.pyenv"
+	# Create virtualenv
+	if python -c 'from importlib.util import find_spec; exit(1 if find_spec("venv") is None else 0)'; then {
+		cmd=(python -m venv)
+	}; else {
+		cmd=(virtualenv)
+	}; fi
+	"${cmd[@]}" "${RUNTIME_VIRTUAL_ENV}"
+
 }; fi

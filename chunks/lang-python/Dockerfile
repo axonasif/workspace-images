@@ -7,16 +7,17 @@ USER gitpod
 # Dazzle does not rebuild a layer until one of its lines are changed. Increase this counter to rebuild this layer.
 ENV TRIGGER_REBUILD=1
 
+ENV RUNTIME_VIRTUAL_ENV="/workspace/.python_venv"
 ENV PYENV_ROOT="$HOME/.pyenv"
 ENV PIPENV_VENV_IN_PROJECT=true
-ENV PIP_CACHE_DIR="${PYENV_ROOT}/pip_cache"
-ENV PYTHONUSERBASE="${PYENV_ROOT}/userbase"
-ENV PATH="${PYENV_ROOT}/bin:${PYENV_ROOT}/shims:${PYTHONUSERBASE}/bin:$PATH"
+ENV PIP_CACHE_DIR="${RUNTIME_VIRTUAL_ENV}/pip_cache"
+ENV PYTHONUSERBASE="${RUNTIME_VIRTUAL_ENV}/python_userbase"
+ENV PATH="${RUNTIME_VIRTUAL_ENV}/bin:${PYENV_ROOT}/bin:${PYENV_ROOT}/shims:${PYTHONUSERBASE}/bin:$PATH"
 # Poetry customizations
-ENV POETRY_CACHE_DIR="${PYENV_ROOT}/poetry"
+ENV POETRY_CACHE_DIR="${RUNTIME_VIRTUAL_ENV}/poetry_cache"
 
 # configure the default intepreter for PyCharm
-ENV PYCHARM_PYTHON_PATH="$HOME/.pyenv/shims/python"
+ENV PYCHARM_PYTHON_PATH="${RUNTIME_VIRTUAL_ENV}/bin/python"
 
 RUN sudo install-packages \
 	# Install python compiling dependencies for pyenv
