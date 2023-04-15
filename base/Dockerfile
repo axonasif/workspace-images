@@ -68,8 +68,8 @@ RUN sudo echo "Running 'sudo' for Gitpod: success" \
     # custom Bash prompt
     && printf "PS1='%s'\n"  '\033[1;32m\u\033[0m \033[1;34m\w\033[0m$(__git_ps1 " (%s)") $ ' >> $HOME/.bashrc \
     # startup scripts loader
-    && printf '%s\n'        'for i in $(ls -A $HOME/.bashrc.d/); do source $HOME/.bashrc.d/$i; done' \
-                            'runonce' >> $HOME/.bashrc \
+    && printf '%s\n'        'runonce' \
+                            'for i in $(ls -A $HOME/.bashrc.d/); do source $HOME/.bashrc.d/$i; done' >> $HOME/.bashrc \
     # create a completions dir for gitpod user
     && mkdir -p $HOME/.local/share/bash-completion/completions
 
