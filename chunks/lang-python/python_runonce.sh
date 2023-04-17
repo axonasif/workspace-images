@@ -38,8 +38,16 @@ if test -e "${GITPOD_REPO_ROOT:-}"; then {
 	if python -c 'from importlib.util import find_spec; exit(1 if find_spec("venv") is None else 0)'; then {
 		cmd=(python -m venv)
 	}; else {
+		pip install --no-input -qqq virtualenv
 		cmd=(virtualenv)
 	}; fi
 	"${cmd[@]}" "${RUNTIME_VIRTUAL_ENV}"
+	
+	# Add system packages path to virtualenv
+	system_path="$(python -c 'from sys import path; print([p for p in path if p.endswith("site-packages")][-1])')"
+	shopt -sq nullglob
+	if venv_path=("${RUNTIME_VIRTUAL_ENV}"/lib/*/site-packages) && test -n "${venv_path:-}"; then {
+		printf '%s\n' "${system_path}" > "${venv_path[0]}/pyenv_system.pth"
+	} fi
 
 }; fi
